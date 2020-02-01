@@ -13,12 +13,18 @@ class Node:
         self.state = state
         self.depth = depth
         self.role = role
-        self.branches = numpy.array()
+        self.branches = []
 
     def generateBranches(self):
         for i in range(0,7):
-            newState = state
-            self.branches.append(Node())
+            newState = GameState(self.state)
+
+            if role == "min":
+                newState.updateState(1, i)
+            else:
+                newState.updateState(2, i)
+
+            self.branches.append(Node(newState, self.depth + 1, "min" if self.role == "max" else "max"))
 
 class GameState:
     __init__(self, state = None, rows = None, cols = None)):
@@ -27,7 +33,7 @@ class GameState:
             self.rows = rows
             self.cols = rows
         else:
-            self.state = state
+            self.state = state.copy()
             self.rows = state.shape[0]
             self.cols = state.shape[1]
 
@@ -36,7 +42,8 @@ class GameState:
         if row >= self.rows:
             return None
         self.state[row, col] = player
-        return self.state
+        self.score = self.evaluateState()
+        return self.state.copy()
 
     def evaluateState(self):
         self.score = eval.evaluateGameState(self.state, 2)
