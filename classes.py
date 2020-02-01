@@ -1,5 +1,6 @@
 import numpy
 import evaluate as eval
+import operator
 
 class GameTree:
     __init__(self, initialState):
@@ -11,6 +12,7 @@ class GameTree:
 class Node:
     __init__(self, state, depth, role):
         self.state = state
+        self.score = state.score
         self.depth = depth
         self.role = role
         self.branches = []
@@ -25,6 +27,7 @@ class Node:
                 newState.updateState(2, i)
 
             self.branches.append(Node(newState, self.depth + 1, "min" if self.role == "max" else "max"))
+            self.branches.sort(key=operator.attrgetter('score'))
 
 class GameState:
     __init__(self, state = None, rows = None, cols = None)):
