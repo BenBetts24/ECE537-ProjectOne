@@ -3,14 +3,14 @@ import evaluate as eval
 import operator
 
 class GameTree:
-    __init__(self, initialState):
+    def __init__(self, initialState):
         self.initialState = initialState
         self.root = Node(self.state, 0, "max")
 
 
 
 class Node:
-    __init__(self, state, depth, role):
+    def __init__(self, state, depth, role):
         self.state = state
         self.score = state.score
         self.depth = depth
@@ -30,7 +30,7 @@ class Node:
             self.branches.sort(key=operator.attrgetter('score'))
 
 class GameState:
-    __init__(self, state = None, rows = None, cols = None)):
+    def __init__(self, state = None, rows = None, cols = None):
         if state is None:
             self.state = numpy.zeros((rows, cols))
             self.rows = rows
@@ -51,3 +51,6 @@ class GameState:
     def evaluateState(self):
         self.score = eval.evaluateGameState(self.state, 2)
         return self.score
+
+
+print("Test")
