@@ -25,7 +25,7 @@ def updateGameState(player,col,gameState):
     gameState[row,col] = player
     return gameState
 
-    
+
 
 win = GraphWin("Window",WIN_WIDTH,WIN_HEIGHT)
 
@@ -70,7 +70,7 @@ while True:
             color = "red"
             isPlayer1 = False
             drawPiece(row,col,color,win)
-            
+
         else:
             player = 2
             gameState[row,col] = 2
