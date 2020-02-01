@@ -21,7 +21,7 @@ class Node:
         for i in range(0,7):
             newState = GameState(self.state)
 
-            if role == "min":
+            if self.role == "min":
                 newState.updateState(1, i)
             else:
                 newState.updateState(2, i)
