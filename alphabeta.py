@@ -20,7 +20,7 @@ def alphaBeta(node, depth, alpha, beta):
             node.generateChildNodes()
         for childIdx in range(len(node.children)):
 #           value := max(value, alphabeta(child, depth − 1, α, β, FALSE))
-            value = max(value, alphaBeta(node.chidlren[childIdx], depth-1, alpha, beta))
+            value = max(value, alphaBeta(node.children[childIdx], depth-1, alpha, beta))
 #           α := max(α, value)
             alpha = max(alpha, value)
 #           if α ≥ β then
@@ -37,7 +37,7 @@ def alphaBeta(node, depth, alpha, beta):
 #       for each child of node do
         if len(node.children) == 0:
             node.generateChildNodes()
-        for childIdx in range(len(node.children)):
+        for childIdx in node.orderToSearch: # range(len(node.children)):
 #           value := min(value, alphabeta(child, depth − 1, α, β, TRUE))
             value = min(value, alphaBeta(node.children[childIdx], depth-1, alpha, beta))
 #           β := min(β, value)

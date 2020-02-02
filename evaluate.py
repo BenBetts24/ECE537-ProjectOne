@@ -1,15 +1,12 @@
 import numpy
 
-def evaluateGameState(gameState,player):
-    if player==1:
-        me = 1
-        opponent = 2
-    elif player==2:
-        me = 2
-        opponent = 1
-    else:
-        raise Exception("'player' must have value of 1 or 2")
-    return sumPaths(gameState,me)-sumPaths(gameState,opponent)
+class SpaceState:
+    EMPTY = 0
+    SELF = 1
+    OPPONENT = -1
+
+def evaluateGameState(gameState):
+    return sumPaths(gameState,SpaceState.SELF)-sumPaths(gameState,SpaceState.OPPONENT)
 
 
 def sumPaths(gameState,player):
@@ -57,18 +54,15 @@ def sumPaths(gameState,player):
 
 def getPathScore(pc,gs,pl):
     exp = 2
-    if pl == 1:
-        opp = 2
-    else:
-        opp = 1
     score = 0
-    # TODO: If all four pieces are same, return +/- inf
     for coord in pc:
-        if gs[coord[0],coord[1]] == opp:
-            return 0
+        if gs[coord[0],coord[1]] == SpaceState.EMPTY:
+            n = coord[0] - numpy.count_nonzero(gs[:,coord[1]])
+            score += 0.25**(n+1)
         elif gs[coord[0],coord[1]] == pl:
             score += 1
-        else:
-            n = coord[1] - numpy.count_nonzero(gs[:,coord[1]])
-            score += 1/(n+2)
+    if score == 0:
+        return -numpy.inf
+    elif score == 4:
+        return numpy.inf
     return score**exp

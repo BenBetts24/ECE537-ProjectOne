@@ -73,11 +73,11 @@ while True:
 
         else:
             player = 2
-            gameState[row,col] = 2
+            gameState[row,col] = -1
             color = "yellow"
             isPlayer1 = True
             drawPiece(row,col,color,win)
-    msg = "%.2f" % e.evaluateGameState(gameState,1)
+    msg = "%.2f" % e.evaluateGameState(gameState)
     print(msg)
 
 

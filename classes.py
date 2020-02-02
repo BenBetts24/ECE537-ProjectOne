@@ -1,22 +1,15 @@
 import numpy
-import evaluate as eval
+from evaluate import SpaceState
+from evaluate import evaluateGameState
 import operator
-import enum
-import alphabeta as ab
-
-class SpaceState(enum.Enum):
-    EMPTY = 0
-    SELF = 1
-    OPPONENT = 2
+from alphabeta import alphaBeta
 
 class GameTree:
-    def __init__(self, maxDepth = None): #, initialState):
+    
+    def __init__(self, rows = 6, cols = 7, maxDepth = 8): #, initialState):
         #self.initialState = initialState
-        self.root = Node(GameState, True)
-        if maxDepth is None:
-            self.maxDepth = 8
-        else:
-            self.maxDepth = maxDepth
+        self.root = Node(GameState(rows=rows,cols=cols), True)
+        self.maxDepth = maxDepth
     
     def findBestMove(self):
         if self.root.isMaximizer:
@@ -41,15 +34,16 @@ class Node:
             (self.evalScore == -numpy.inf) or \
             (numpy.count_nonzero(self.state.data) == numpy.size(self.state.data))
         self.children = []
+        self.orderToSearch = []
     
     def updateEvalScore(self):
-        self.evalScore = eval.evaluateGameState(self.state, SpaceState.SELF)
+        self.evalScore = evaluateGameState(self.state.data)
 
     def generateChildNodes(self):
         if self.evalScore == numpy.inf or self.evalScore == -numpy.inf:
             return
-        for i in range(0,self.state.cols):            
-            newState = GameState(data=self.state.data)
+        for i in range(0,self.state.shape[1]):            
+            newState = GameState(data=numpy.copy(self.state.data))
 
             if self.isMaximizer:
                 isValid = newState.updateState(SpaceState.SELF, i)
@@ -57,13 +51,17 @@ class Node:
                 isValid = newState.updateState(SpaceState.OPPONENT, i)
             if isValid:
                 self.children.append(Node(newState, not self.isMaximizer))
-
-        self.children.sort(key=operator.attrgetter('evalScore'))
+        
+        allScores = [c.evalScore for c in self.children]
+        self.orderToSearch = sorted(range(len(self.children)), key=allScores.__getitem__)
+        # self.children.sort(key=operator.attrgetter('evalScore'),reverse=True)
 
     def getMinimaxScoresOfChildren(self,maxDepth):
         scores = []
+        if len(self.children) == 0:
+            self.generateChildNodes()
         for i in range(len(self.children)):
-            scores.append(ab.alphaBeta(self.children[i], maxDepth-1, -numpy.inf, numpy.inf))
+            scores.append(alphaBeta(self.children[i], maxDepth-1, -numpy.inf, numpy.inf))
         return scores
 
 
@@ -71,16 +69,14 @@ class GameState:
     def __init__(self, data = None, rows = None, cols = None):
         if data is None:
             self.data = numpy.zeros((rows, cols))
-            self.rows = rows
-            self.cols = cols
+            self.shape = [rows, cols]
         else:
             self.data = data
-            self.rows = data.shape[0]
-            self.cols = data.shape[1]
+            self.shape = data.shape
 
     def updateState(self, player, col):
         row = numpy.count_nonzero(self.data[:,col])
-        if row >= self.rows:
+        if row >= self.shape[0]:
             return False
         self.data[row, col] = player
         return True
