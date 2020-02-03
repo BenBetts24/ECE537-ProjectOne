@@ -1,21 +1,24 @@
 import numpy
 from evaluate import SpaceState
-from evaluate import evaluateGameState
+'''from evaluate import evaluateGameState'''
+import evaluator as ev
 import operator
 from alphabeta import alphaBeta
 
 class GameTree:
     
-    def __init__(self, rows = 6, cols = 7, maxDepth = 8): #, initialState):
+    def __init__(self, rows = 6, cols = 7, maxDepth = 4): #, initialState):
         #self.initialState = initialState
-        self.root = Node(GameState(rows=rows,cols=cols), True)
+        self.evaluator = ev.evaluator()
+        self.root = Node(GameState(rows=rows,cols=cols), True, self.evaluator)
         self.maxDepth = maxDepth
     
     def findBestMove(self):
         if self.root.isMaximizer:
             minimaxScores = self.root.getMinimaxScoresOfChildren(self.maxDepth)
         else:
-            raise Exception("Root of tree is minimizer. Best move cannot be computed.")
+            raise Exception("Root of tree is minimizer (i.e. it is the opponent's turn). " + \
+                "Best move cannot be computed.")
         return numpy.argmax(minimaxScores)
     
     def move(self,col = None):
@@ -25,8 +28,12 @@ class GameTree:
 
 
 class Node:
-    def __init__(self, state, isMaximizer):
+    def __init__(self, state, isMaximizer, evaluator=None):
         self.state = state
+        if evaluator is not None:
+            self.evaluator = evaluator
+        else:
+            self.evaluator = ev.evaluator()
         self.updateEvalScore()
         # self.depth = depth
         self.isMaximizer = isMaximizer
@@ -37,7 +44,7 @@ class Node:
         self.orderToSearch = []
     
     def updateEvalScore(self):
-        self.evalScore = evaluateGameState(self.state.data)
+        self.evalScore = self.evaluator.evaluate(self.state.data)
 
     def generateChildNodes(self):
         if self.evalScore == numpy.inf or self.evalScore == -numpy.inf:
@@ -50,7 +57,7 @@ class Node:
             else:
                 isValid = newState.updateState(SpaceState.OPPONENT, i)
             if isValid:
-                self.children.append(Node(newState, not self.isMaximizer))
+                self.children.append(Node(newState, not self.isMaximizer, self.evaluator))
         
         allScores = [c.evalScore for c in self.children]
         self.orderToSearch = sorted(range(len(self.children)), key=allScores.__getitem__)
