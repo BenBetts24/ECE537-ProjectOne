@@ -1,5 +1,6 @@
 import numpy
 from evaluate import SpaceState
+from evaluate import findColOfDifference
 '''from evaluate import evaluateGameState'''
 import evaluator as ev
 import operator
@@ -24,7 +25,13 @@ class ConnectFourPlayer:
         else:
             raise Exception("Root of tree is minimizer (i.e. it is the opponent's turn). " + \
                 "Best move cannot be computed.")
-        return numpy.argmax(minimaxScores)
+
+        # return numpy.argmax(minimaxScores)
+
+        # Find column where child state matrix differs from current state matrix
+        idx = numpy.argmax(minimaxScores)
+        return findColOfDifference(self.root.children[idx].state.data, self.root.state.data)
+        
 
     def move(self,col = None):
         if col is None:
@@ -34,7 +41,18 @@ class ConnectFourPlayer:
             shouldReturn = False
         if len(self.root.children)==0:
             self.root.generateChildNodes()
-        self.root = self.root.children[col]
+        raiseExc = True
+        for c in self.root.children:
+            if findColOfDifference(c.state.data, self.root.state.data) == col:
+                raiseExc = False
+                self.root = c
+                break
+        if raiseExc:
+            raise Exception('Move is not valid')
+
+        #FOR DEBUGGING:
+        #print(self.root.state.data)
+        #print()
         if shouldReturn:
             return col
 
@@ -70,7 +88,8 @@ class Node:
                 isValid = newState.updateState(SpaceState.OPPONENT, i)
             if isValid:
                 self.children.append(Node(newState, not self.isMaximizer, self.evaluator))
-
+            #else:
+            #    self.children.append(None)
         allScores = [c.evalScore for c in self.children]
         self.orderToSearch = sorted(range(len(self.children)), key=allScores.__getitem__)
         # self.children.sort(key=operator.attrgetter('evalScore'),reverse=True)
@@ -94,7 +113,7 @@ class GameState:
             self.shape = data.shape
 
     def updateState(self, player, col):
-        row = numpy.count_nonzero(self.data[:,col])
+        row = numpy.count_nonzero(self.data[:,col] != SpaceState.EMPTY)
         if row >= self.shape[0]:
             return False
         self.data[row, col] = player

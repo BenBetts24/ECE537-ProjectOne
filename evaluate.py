@@ -5,6 +5,11 @@ class SpaceState:
     SELF = 1
     OPPONENT = -1
 
+def findColOfDifference(A,B):
+    coord = numpy.argwhere(numpy.not_equal(A,B))
+    col = coord[0,1]
+    return col
+
 def evaluateGameState(gameState):
     return sumPaths(gameState,SpaceState.SELF)-sumPaths(gameState,SpaceState.OPPONENT)
 
