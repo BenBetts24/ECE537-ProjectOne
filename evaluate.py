@@ -58,7 +58,7 @@ def getPathScore(pc,gs,pl):
     for coord in pc:
         if gs[coord[0],coord[1]] == SpaceState.EMPTY:
             n = coord[0] - numpy.count_nonzero(gs[:,coord[1]])
-            score += 0.25**(n+1)
+            score += 0.2**(n+1)
         elif gs[coord[0],coord[1]] == pl:
             score += 1
     if score == 0:

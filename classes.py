@@ -5,14 +5,19 @@ import evaluator as ev
 import operator
 from alphabeta import alphaBeta
 
-class GameTree:
+class ConnectFourPlayer:
     
-    def __init__(self, rows = 6, cols = 7, maxDepth = 4): #, initialState):
+    def __init__(self, playerNumber = 1, rows = 6, cols = 7, maxDepth = 4): #, initialState):
         #self.initialState = initialState
         self.evaluator = ev.evaluator()
-        self.root = Node(GameState(rows=rows,cols=cols), True, self.evaluator)
+        if playerNumber == 1:
+            self.root = Node(GameState(rows=rows,cols=cols), True, self.evaluator)
+        elif playerNumber == 2:
+            self.root = Node(GameState(rows=rows,cols=cols), False, self.evaluator)
+        else:
+            raise Exception('playerNumber must be 1 or 2')
         self.maxDepth = maxDepth
-    
+
     def findBestMove(self):
         if self.root.isMaximizer:
             minimaxScores = self.root.getMinimaxScoresOfChildren(self.maxDepth)
@@ -20,11 +25,18 @@ class GameTree:
             raise Exception("Root of tree is minimizer (i.e. it is the opponent's turn). " + \
                 "Best move cannot be computed.")
         return numpy.argmax(minimaxScores)
-    
+
     def move(self,col = None):
         if col is None:
             col = self.findBestMove()
+            shouldReturn = True
+        else:
+            shouldReturn = False
+        if len(self.root.children)==0:
+            self.root.generateChildNodes()
         self.root = self.root.children[col]
+        if shouldReturn:
+            return col
 
 
 class Node:
@@ -42,7 +54,7 @@ class Node:
             (numpy.count_nonzero(self.state.data) == numpy.size(self.state.data))
         self.children = []
         self.orderToSearch = []
-    
+
     def updateEvalScore(self):
         self.evalScore = self.evaluator.evaluate(self.state.data)
 
@@ -58,7 +70,7 @@ class Node:
                 isValid = newState.updateState(SpaceState.OPPONENT, i)
             if isValid:
                 self.children.append(Node(newState, not self.isMaximizer, self.evaluator))
-        
+
         allScores = [c.evalScore for c in self.children]
         self.orderToSearch = sorted(range(len(self.children)), key=allScores.__getitem__)
         # self.children.sort(key=operator.attrgetter('evalScore'),reverse=True)

@@ -1,7 +1,7 @@
 import classes as c
 
 # maxDepth can't be much more than 4 or else it will take too long
-gt = c.GameTree(maxDepth = 4)
+gt = c.GameTree(maxDepth = 3)
 print(gt.root.state.data)
 print(gt.root.evalScore)
 
