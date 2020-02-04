@@ -2,6 +2,13 @@ from graphics import *
 import numpy
 from classes import ConnectFourPlayer
 
+def keepWindowOpen(w):
+    while True:
+        try:
+            w.getMouse()
+        except:
+            break
+
 COMP_IS_PLAYER_ONE = False
 
 NUM_ROWS = 6
@@ -52,23 +59,24 @@ while True:
         col = c4p.move()
         
     else:
-        try:
-            pt = win.getMouse()
-        except:
-            break
-        if pt.getY() > NUM_ROWS*GRID_SIZE:
-            win.close()
-            break
-        else:
-            col = int(pt.getX()/GRID_SIZE)
-            c4p.move(col)
-        
-    color = "yellow" if color=="red" else "red"    
+        while True:
+            try:
+                pt = win.getMouse()
+            except:
+                break
+            if pt.getY() > NUM_ROWS*GRID_SIZE:
+                continue
+            else:
+                col = int(pt.getX()/GRID_SIZE)
+                c4p.move(col)
+                break
+           
     row = numFilled[col]
     if row >= NUM_ROWS:
         continue
     isComputersTurn = not isComputersTurn
     drawPiece(row,col,color,win)
+    color = "yellow" if color=="red" else "red" 
     
     numFilled[col] += 1
 
@@ -81,3 +89,5 @@ while True:
     elif score == -numpy.inf:
         print("You win!")
         break
+
+keepWindowOpen(win)
