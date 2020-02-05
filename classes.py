@@ -96,6 +96,7 @@ class Node:
         # self.children.sort(key=operator.attrgetter('evalScore'),reverse=True)
 
     def getMinimaxScoresOfChildren(self,maxDepth):
+        outFile = open("timing.txt", "a")
         start = time.time()
         scores = []
         if len(self.children) == 0:
@@ -103,7 +104,8 @@ class Node:
         for i in range(len(self.children)):
             scores.append(alphaBeta(self.children[i], maxDepth-1, -numpy.inf, numpy.inf, True))
         taken = time.time() - start
-        print(taken)
+        outFile.write(str(taken) + "\n")
+        outFile.close()
         return scores
 
 

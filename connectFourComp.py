@@ -57,6 +57,8 @@ isComputerOne = True
 counter = 0
 seed(time.time())
 
+os.remove("timing.txt")
+
 while True:
 
 
