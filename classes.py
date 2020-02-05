@@ -107,7 +107,7 @@ class Node:
             scores.append(score)
             totalNumNodesVisited += numNodesVisited
         taken = time.time() - start
-        n = self.state.cols
+        n = self.state.shape[1]
         totalNumNodes = 0
         for i in range(maxDepth):
             totalNumNodes += n**i
