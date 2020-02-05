@@ -109,7 +109,7 @@ class Node:
         taken = time.time() - start
         n = self.state.shape[1]
         totalNumNodes = 0
-        for i in range(maxDepth):
+        for i in range(maxDepth+1):
             totalNumNodes += n**i
         pct = totalNumNodesVisited / totalNumNodes
         outFile.write(str(taken) + " " + str(pct) + "\n")

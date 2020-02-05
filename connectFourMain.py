@@ -57,6 +57,7 @@ while True:
 
     if isComputersTurn:
         col = c4p.move()
+        row = numFilled[col]
 
     else:
         while True:
@@ -68,12 +69,13 @@ while True:
                 continue
             else:
                 col = int(pt.getX()/GRID_SIZE)
+                row = numFilled[col]
+                if row >= NUM_ROWS:
+                    continue
                 c4p.move(col)
                 break
 
-    row = numFilled[col]
-    if row >= NUM_ROWS:
-        continue
+    
     isComputersTurn = not isComputersTurn
     drawPiece(row,col,color,win)
     color = "yellow" if color=="red" else "red" 
