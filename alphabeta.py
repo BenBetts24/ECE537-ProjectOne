@@ -46,7 +46,7 @@ def alphaBeta(node, depth, alpha, beta, pruning):
         for childIdx in node.orderToSearch: # range(len(node.children)):
 #           value := min(value, alphabeta(child, depth − 1, α, β, TRUE))
             (abScore, numVisited) = alphaBeta(node.children[childIdx], depth-1, alpha, beta, pruning)
-            value = max(value, abScore)
+            value = min(value, abScore)
             totalNumVisited += numVisited
 #           β := min(β, value)
             beta = min(beta, value)
