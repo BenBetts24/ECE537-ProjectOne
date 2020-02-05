@@ -94,9 +94,13 @@ while True:
 
     if score == numpy.inf:
         print("Computer One Wins!")
+        time.sleep(5)
+        quit()
         break
     elif score == -numpy.inf:
         print("Computer Two Wins!")
+        time.sleep(5)
+        quit()
         break
 
 keepWindowOpen(win)
