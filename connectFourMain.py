@@ -54,10 +54,10 @@ color = "red"
 isComputersTurn = COMP_IS_PLAYER_ONE
 
 while True:
-    
+
     if isComputersTurn:
         col = c4p.move()
-        
+
     else:
         while True:
             try:
@@ -70,14 +70,14 @@ while True:
                 col = int(pt.getX()/GRID_SIZE)
                 c4p.move(col)
                 break
-           
+
     row = numFilled[col]
     if row >= NUM_ROWS:
         continue
     isComputersTurn = not isComputersTurn
     drawPiece(row,col,color,win)
     color = "yellow" if color=="red" else "red" 
-    
+
     numFilled[col] += 1
 
     # Check whether someone has won:

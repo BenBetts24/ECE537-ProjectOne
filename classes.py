@@ -5,9 +5,10 @@ from evaluate import findColOfDifference
 import evaluator as ev
 import operator
 from alphabeta import alphaBeta
+import time
 
 class ConnectFourPlayer:
-    
+
     def __init__(self, playerNumber = 1, rows = 6, cols = 7, maxDepth = 4): #, initialState):
         #self.initialState = initialState
         self.evaluator = ev.evaluator()
@@ -31,7 +32,7 @@ class ConnectFourPlayer:
         # Find column where child state matrix differs from current state matrix
         idx = numpy.argmax(minimaxScores)
         return findColOfDifference(self.root.children[idx].state.data, self.root.state.data)
-        
+
 
     def move(self,col = None):
         if col is None:
@@ -79,7 +80,7 @@ class Node:
     def generateChildNodes(self):
         if self.evalScore == numpy.inf or self.evalScore == -numpy.inf:
             return
-        for i in range(0,self.state.shape[1]):            
+        for i in range(0,self.state.shape[1]):
             newState = GameState(data=numpy.copy(self.state.data))
 
             if self.isMaximizer:
@@ -95,11 +96,14 @@ class Node:
         # self.children.sort(key=operator.attrgetter('evalScore'),reverse=True)
 
     def getMinimaxScoresOfChildren(self,maxDepth):
+        start = time.time()
         scores = []
         if len(self.children) == 0:
             self.generateChildNodes()
         for i in range(len(self.children)):
-            scores.append(alphaBeta(self.children[i], maxDepth-1, -numpy.inf, numpy.inf))
+            scores.append(alphaBeta(self.children[i], maxDepth-1, -numpy.inf, numpy.inf, True))
+        taken = time.time() - start
+        print(taken)
         return scores
 
 
@@ -122,6 +126,3 @@ class GameState:
     """def evaluateState(self):
         self.score = eval.evaluateGameState(self.state, SpaceState.SELF)
         return self.score"""
-
-
-# print("Test")
