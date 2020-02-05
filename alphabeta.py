@@ -10,7 +10,10 @@ def alphaBeta(node, depth, alpha, beta, pruning):
 #   if depth = 0 or node is a terminal node then
     if depth == 0 or node.isTerminal:
 #       return the heuristic value of node
-        return node.evalScore
+        return (node.evalScore, 1)
+    
+    totalNumVisited = 0
+
 #   if maximizingPlayer then
     if node.isMaximizer:
 #       value := −∞
@@ -20,7 +23,10 @@ def alphaBeta(node, depth, alpha, beta, pruning):
             node.generateChildNodes()
         for childIdx in range(len(node.children)):
 #           value := max(value, alphabeta(child, depth − 1, α, β, FALSE))
-            value = max(value, alphaBeta(node.children[childIdx], depth-1, alpha, beta, pruning))
+            (abScore, numVisited) = alphaBeta(node.children[childIdx], depth-1, alpha, beta, pruning)
+            value = max(value, abScore)
+            totalNumVisited += numVisited
+
 #           α := max(α, value)
             alpha = max(alpha, value)
 #           if α ≥ β then
@@ -28,7 +34,7 @@ def alphaBeta(node, depth, alpha, beta, pruning):
 #               break (* β cut-off *)
                 break
 #       return value
-        return value
+        return (value, totalNumVisited)
 
 #   else
     else:
@@ -39,7 +45,9 @@ def alphaBeta(node, depth, alpha, beta, pruning):
             node.generateChildNodes()
         for childIdx in node.orderToSearch: # range(len(node.children)):
 #           value := min(value, alphabeta(child, depth − 1, α, β, TRUE))
-            value = min(value, alphaBeta(node.children[childIdx], depth-1, alpha, beta, pruning))
+            (abScore, numVisited) = alphaBeta(node.children[childIdx], depth-1, alpha, beta, pruning)
+            value = max(value, abScore)
+            totalNumVisited += numVisited
 #           β := min(β, value)
             beta = min(beta, value)
 #           if α ≥ β then
@@ -47,4 +55,4 @@ def alphaBeta(node, depth, alpha, beta, pruning):
 #               break (* α cut-off *)
                 break
 #       return value
-        return value
+        return (value, totalNumVisited)
