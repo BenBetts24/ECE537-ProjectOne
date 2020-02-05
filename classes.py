@@ -107,12 +107,7 @@ class Node:
             scores.append(score)
             totalNumNodesVisited += numNodesVisited
         taken = time.time() - start
-        n = self.state.shape[1]
-        totalNumNodes = 0
-        for i in range(maxDepth+1):
-            totalNumNodes += n**i
-        pct = totalNumNodesVisited / totalNumNodes
-        outFile.write(str(taken) + " " + str(pct) + "\n")
+        outFile.write(str(taken) + " " + str(totalNumNodesVisited) + "\n")
         outFile.close()
         return scores
 

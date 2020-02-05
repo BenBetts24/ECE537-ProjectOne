@@ -34,7 +34,7 @@ def alphaBeta(node, depth, alpha, beta, pruning):
 #               break (* β cut-off *)
                 break
 #       return value
-        return (value, totalNumVisited)
+        return (value, 1 + totalNumVisited)
 
 #   else
     else:
@@ -55,4 +55,4 @@ def alphaBeta(node, depth, alpha, beta, pruning):
 #               break (* α cut-off *)
                 break
 #       return value
-        return (value, totalNumVisited)
+        return (value, 1 + totalNumVisited)
