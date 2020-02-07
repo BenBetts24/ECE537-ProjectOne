@@ -1,5 +1,6 @@
 import time as timer
 from datetime import datetime
+import os
 
 def weightedAverage(old, new, total):
     oldWeight = (total - 1) / total
@@ -11,11 +12,13 @@ def writeToFile(moves, times, nodes, gameNum, name):
 
     # Overwrites existing file, file updated after every game
     outFile = open(name, "w")
+    outFile.write("Total Games Played: " + str(gameNum) + "\n")
 
     # Output semicolon separated for easy parsing later on
     for move in moves.keys():
         outFile.write(str(move) + ";" + str(moves[move]) + ";" + str(times[move]) + ";" + str(nodes[move]) + "\n")
 
+    outFile.close()
     print("done")
     timer.sleep(3)
 
@@ -24,12 +27,36 @@ averageTimes = {} # Avg time spend on each move
 averageNodes = {} # Avg nodes visited
 moveCounts = {} # How many times that move has been played
 gameNum = 0
-fileName = "SimulationData/SimData-" + str(datetime.now())
+
+oldOrNew = input("Add to main SimData file or create new one? (Old/New): ")
+
+if oldOrNew == "New" or oldOrNew == "new" or oldOrNew == "n" or oldOrNew == "N":
+    fileName = "SimulationData/SimData-" + str(datetime.now()) + ".txt"
+else:
+    fileName = "SimulationData/TotalSimData.txt"
+
+    if os.path.exists(fileName):
+        inFile = open(fileName, "r")
+
+        lineOne = inFile.readline().split()
+        gameNum = int(lineOne[3])
+
+        for line in inFile.readlines():
+            if line != "":
+                moveLine = line.split(";")
+                move = int(moveLine[0])
+                averageTimes[move] = float(moveLine[2])
+                averageNodes[move] = float(moveLine[3])
+                moveCounts[move] = int(moveLine[1])
+
+        inFile.close()
+        os.remove(fileName)
 
 while True:
     gameNum += 1
 
     # The next game to be run from which data will be collected
+    print("------------------")
     print("Starting game " + str(gameNum))
     exec(open("./connectFourComp.py").read())
 
