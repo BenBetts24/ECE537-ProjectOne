@@ -91,5 +91,7 @@ while True:
     elif score == -numpy.inf:
         print("You win!")
         break
-
+    elif numpy.all(numFilled==NUM_ROWS):
+        print("It's a tie!")
+        break
 keepWindowOpen(win)

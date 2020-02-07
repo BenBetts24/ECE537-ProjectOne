@@ -103,6 +103,11 @@ while True and not gameWon:
         time.sleep(3)
         gameWon = True
         break
+    elif numpy.all(numFilled==NUM_ROWS):
+        gameWon = True
+        print("It's a tie!")
+        time.sleep(3)
+        break
 
 win.close()
 #if not gameWon:
