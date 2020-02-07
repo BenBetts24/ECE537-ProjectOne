@@ -55,12 +55,13 @@ cTwo = ConnectFourPlayer(2)
 color = "red"
 isComputerOne = True
 counter = 0
+gameWon = False
 seed(time.time())
 
-os.remove("timing.txt")
+if os.path.exists("data.txt"):
+    os.remove("data.txt")
 
-while True:
-
+while True and not gameWon:
 
     if counter > 3:
         if isComputerOne:
@@ -94,13 +95,15 @@ while True:
 
     if score == numpy.inf:
         print("Computer One Wins!")
-        time.sleep(5)
-        quit()
+        time.sleep(3)
+        gameWon = True
         break
     elif score == -numpy.inf:
         print("Computer Two Wins!")
-        time.sleep(5)
-        quit()
+        time.sleep(3)
+        gameWon = True
         break
 
-keepWindowOpen(win)
+win.close()
+#if not gameWon:
+#    keepWindowOpen(win)
