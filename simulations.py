@@ -1,13 +1,14 @@
 import time as timer
+from datetime import datetime
 
 def weightedAverage(old, new, total):
     oldWeight = (total - 1) / total
     newWeight = 1 / total
     return (oldWeight * old) + (newWeight * new)
 
-def writeToFile(moves, times, nodes):
+def writeToFile(moves, times, nodes, gameNum, name):
     print("Writing to file...")
-    outFile = open("SimData.txt", "w")
+    outFile = open(name, "w")
 
     for move in moves.keys():
         outFile.write(str(move) + ";" + str(moves[move]) + ";" + str(times[move]) + ";" + str(nodes[move]) + "\n")
@@ -18,11 +19,14 @@ def writeToFile(moves, times, nodes):
 averageTimes = {}
 averageNodes = {}
 moveCounts = {}
+gameNum = 0
+fileName = "SimulationData/SimData-" + str(datetime.now())
 
 while True:
-    print("Starting game")
+    gameNum += 1
+
+    print("Starting game " + str(gameNum))
     exec(open("./connectFourComp.py").read())
-    print("Game complete")
 
     computerOne = True
     moveNum = 0
@@ -61,4 +65,4 @@ while True:
             print("Finished reading data")
             break
 
-    writeToFile(moveCounts, averageTimes, averageNodes)
+    writeToFile(moveCounts, averageTimes, averageNodes, gameNum, fileName)
