@@ -20,9 +20,9 @@ class ConnectFourPlayer:
             raise Exception('playerNumber must be 1 or 2')
         self.maxDepth = maxDepth
 
-    def findBestMove(self):
+    def findBestMove(self, pruning):
         if self.root.isMaximizer:
-            minimaxScores = self.root.getMinimaxScoresOfChildren(self.maxDepth)
+            minimaxScores = self.root.getMinimaxScoresOfChildren(self.maxDepth, pruning = pruning)
         else:
             raise Exception("Root of tree is minimizer (i.e. it is the opponent's turn). " + \
                 "Best move cannot be computed.")
@@ -34,9 +34,9 @@ class ConnectFourPlayer:
         return findColOfDifference(self.root.children[idx].state.data, self.root.state.data)
 
 
-    def move(self,col = None):
+    def move(self,col = None, pruning = True):
         if col is None:
-            col = self.findBestMove()
+            col = self.findBestMove(pruning = pruning)
             shouldReturn = True
         else:
             shouldReturn = False
@@ -95,7 +95,7 @@ class Node:
         self.orderToSearch = sorted(range(len(self.children)), key=allScores.__getitem__)
         # self.children.sort(key=operator.attrgetter('evalScore'),reverse=True)
 
-    def getMinimaxScoresOfChildren(self,maxDepth):
+    def getMinimaxScoresOfChildren(self,maxDepth, pruning):
         outFile = open("data.txt", "a")
         start = time.time()
         scores = []
@@ -103,7 +103,7 @@ class Node:
             self.generateChildNodes()
         totalNumNodesVisited = 0
         for i in range(len(self.children)):
-            (score, numNodesVisited) = alphaBeta(self.children[i], maxDepth-1, -numpy.inf, numpy.inf, True)
+            (score, numNodesVisited) = alphaBeta(self.children[i], maxDepth-1, -numpy.inf, numpy.inf, pruning=pruning)
             scores.append(score)
             totalNumNodesVisited += numNodesVisited
         taken = time.time() - start

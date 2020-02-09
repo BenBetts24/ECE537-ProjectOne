@@ -29,6 +29,7 @@ moveCounts = {} # How many times that move has been played
 gameNum = 0
 
 oldOrNew = input("Add to main SimData file or create new one? (Old/New): ")
+pruning = input("Use Alpha-Beta Pruning? (Y/N): ")
 
 if oldOrNew == "New" or oldOrNew == "new" or oldOrNew == "n" or oldOrNew == "N":
     fileName = "SimulationData/SimData-" + str(datetime.now()) + ".txt"
@@ -58,7 +59,8 @@ while True:
     # The next game to be run from which data will be collected
     print("------------------")
     print("Starting game " + str(gameNum))
-    exec(open("./connectFourComp.py").read())
+#    exec(open("./connectFourComp.py").read())
+    os.system("python3 connectFourComp.py " + pruning)
 
     # Keeping track of which move is being played
     computerOne = True

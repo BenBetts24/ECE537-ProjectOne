@@ -1,5 +1,6 @@
 from graphics import *
 import numpy
+import sys
 from classes import ConnectFourPlayer
 from random import seed
 from random import randint
@@ -58,6 +59,16 @@ counter = 0
 gameWon = False
 seed(time.time())
 
+pruningInput = ""
+pruning = True
+if len(sys.argv) <= 1:
+    pruningInput = input("Use Alpha-Beta Pruning? (Y/N): ")
+else:
+    pruningInput = sys.argv[1]
+
+if pruningInput == "N" or pruningInput == "n" or pruningInput == "No" or pruningInput == "no":
+    pruning = False
+
 if os.path.exists("data.txt"):
     os.remove("data.txt")
 
@@ -65,10 +76,10 @@ while True and not gameWon:
 
     if counter > 3:
         if isComputerOne:
-            col = cOne.move()
+            col = cOne.move(pruning = pruning)
             cTwo.move(col)
         else:
-            col = cTwo.move()
+            col = cTwo.move(pruning = pruning)
             cOne.move(col)
     else:
         col = randint(0,6)
