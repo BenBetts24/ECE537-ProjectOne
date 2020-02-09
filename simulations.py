@@ -30,11 +30,15 @@ gameNum = 0
 
 oldOrNew = input("Add to main SimData file or create new one? (Old/New): ")
 pruning = input("Use Alpha-Beta Pruning? (Y/N): ")
+pruningString = ""
+
+if pruning == "N" or pruning == "n" or pruning == "No" or pruning == "no":
+    pruningString = "NoPruning"
 
 if oldOrNew == "New" or oldOrNew == "new" or oldOrNew == "n" or oldOrNew == "N":
-    fileName = "SimulationData/SimData-" + str(datetime.now()) + ".txt"
+    fileName = "SimulationData/" + pruningString + "SimData-" + str(datetime.now()) + ".txt"
 else:
-    fileName = "SimulationData/TotalSimData.txt"
+    fileName = "SimulationData/" + pruningString + "TotalSimData.txt"
 
     if os.path.exists(fileName):
         inFile = open(fileName, "r")
